@@ -1,5 +1,7 @@
 package com.james.workouttracker;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -69,12 +72,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         workoutDaysAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, workoutDaysListItems);
         workoutDaysListView.setAdapter(workoutDaysAdapter);
 
+        // Moves to workout page when user clicks on day of week
+        workoutDaysListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
         // Deletes row if user clicks row for a long time.
         workoutDaysListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                workoutDaysListItems.remove(position);
-                workoutDaysAdapter.notifyDataSetChanged();
+
+                final int pos = position;
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Delete Workout Day")
+                        .setMessage("Are you sure you want to remove this day of the week from your workout journal?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                workoutDaysListItems.remove(pos);
+                                workoutDaysAdapter.notifyDataSetChanged();
+                                Toast.makeText(MainActivity.this, "Item deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
 
                 return true;
             }
