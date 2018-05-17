@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setupListView();
     }
 
-    // Handle dynamic insertion
+    // Handle item user selected from spinner to ListView
     public void addItems(View v) {
         if (workoutDaysListItems.indexOf(selectedDay) == -1) {
             workoutDaysListItems.add(selectedDay);
@@ -69,5 +69,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         workoutDaysAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, workoutDaysListItems);
         workoutDaysListView.setAdapter(workoutDaysAdapter);
 
+        // Deletes row if user clicks row for a long time.
+        workoutDaysListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                workoutDaysListItems.remove(position);
+                workoutDaysAdapter.notifyDataSetChanged();
+
+                return true;
+            }
+        });
     }
 }
