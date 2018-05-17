@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/exerciseName"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight=".70"
+            android:ems="10"
+            android:hint="Exercise Name"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/addBtn"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:onClick="addItems"
+            android:text="Add"
+            android:layout_weight=".30"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/exercisesListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:drawSelectorOnTop="false" />
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.james.workouttracker;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -76,7 +77,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         workoutDaysListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getApplicationContext(), Exercises.class);
+                intent.putExtra("dayOfWeek", workoutDaysListItems.get(position));
+                startActivity(intent);
             }
         });
 
