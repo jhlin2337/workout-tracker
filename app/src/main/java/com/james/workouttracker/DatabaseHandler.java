@@ -37,6 +37,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // ------------------------------------------------------------------------------------------ //
+    // DATABASE METHODS FOR WORKOUT DAYS
+
     // Add a day of week that user works out to database
     public void addWorkoutDay(String day) {
         ContentValues values = new ContentValues();
@@ -70,4 +73,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return workoutDaysList;
     }
+
+
+    // ------------------------------------------------------------------------------------------ //
+    // DATABASE METHODS FOR EXERCISES
+
+
+    // ------------------------------------------------------------------------------------------ //
+    // DATABASE METHODS FOR WORKOUT LOG
 }
