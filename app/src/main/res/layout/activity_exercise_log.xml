@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/rep1"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight=".20"
+            android:ems="10"
+            android:hint="Rep 1"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/rep2"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight=".20"
+            android:ems="10"
+            android:hint="Rep 2"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/rep3"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight=".20"
+            android:ems="10"
+            android:hint="Rep 3"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/weight"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight=".20"
+            android:ems="10"
+            android:hint="Weight"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/addBtn"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:onClick="addItems"
+            android:text="Add"
+            android:layout_weight=".20"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/exerciseLogListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:drawSelectorOnTop="false" />
+</LinearLayout>

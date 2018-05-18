@@ -1,6 +1,7 @@
 package com.james.workouttracker;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,10 +17,10 @@ import java.util.ArrayList;
 
 public class Exercises extends AppCompatActivity {
 
-    // Define ArrayList that will hold the workoutDays
+    // Define ArrayList that will hold the exercises
     ArrayList<String> exercisesListItems = new ArrayList<String>();
 
-    // Define adapter that will handle the workoutDaysListView
+    // Define adapter that will handle the exercisesListView
     ArrayAdapter<String> exercisesAdapter;
 
     @Override
@@ -35,7 +36,7 @@ public class Exercises extends AppCompatActivity {
     public void addItems(View v) {
         EditText exerciseNameEditText = (EditText) findViewById(R.id.exerciseName);
         String exerciseName = exerciseNameEditText.getText().toString();
-        
+
         if (exerciseName.length() > 0 && exercisesListItems.indexOf(exerciseName) == -1) {
             exercisesListItems.add(exerciseName);
         }
@@ -52,7 +53,9 @@ public class Exercises extends AppCompatActivity {
         exercisesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getApplicationContext(), ExerciseLog.class);
+                intent.putExtra("exercise", exercisesListItems.get(position));
+                startActivity(intent);
             }
         });
 
