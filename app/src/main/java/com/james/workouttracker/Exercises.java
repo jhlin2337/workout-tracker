@@ -23,12 +23,21 @@ public class Exercises extends AppCompatActivity {
     // Define adapter that will handle the exercisesListView
     ArrayAdapter<String> exercisesAdapter;
 
+    // Create an instance variable for the database
+    DatabaseHandler databaseHandler;
+
+    // Variables that represent the name and id of the dayOfWeek the page is currently on
+    String dayOfWeek;
+    int dayOfWeekId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercises);
 
-        String dayOfWeek = getIntent().getStringExtra("dayOfWeek");
+        databaseHandler = new DatabaseHandler(this);
+        dayOfWeek = getIntent().getStringExtra("dayOfWeek");
+        dayOfWeekId = getIntent().getIntExtra("id", -1);
         setupListView();
     }
 
@@ -39,13 +48,16 @@ public class Exercises extends AppCompatActivity {
 
         if (exerciseName.length() > 0 && exercisesListItems.indexOf(exerciseName) == -1) {
             exercisesListItems.add(exerciseName);
+            databaseHandler.addExercise(exerciseName, dayOfWeekId);
         }
         exercisesAdapter.notifyDataSetChanged();
     }
 
     // Set up ListView of days of week when user works out
     private void setupListView() {
-        ListView exercisesListView = (ListView) findViewById(R.id.exercisesListView);
+        exercisesListItems = databaseHandler.getExercises(dayOfWeekId);
+
+        final ListView exercisesListView = (ListView) findViewById(R.id.exercisesListView);
         exercisesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, exercisesListItems);
         exercisesListView.setAdapter(exercisesAdapter);
 
@@ -54,7 +66,10 @@ public class Exercises extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), ExerciseLog.class);
-                intent.putExtra("exercise", exercisesListItems.get(position));
+                String exercise = exercisesListItems.get(position);
+                intent.putExtra("exercise", exercise);
+                int exerciseId = databaseHandler.getExerciseId(exercise, dayOfWeekId);
+                intent.putExtra("id", exerciseId);
                 startActivity(intent);
             }
         });
@@ -71,6 +86,8 @@ public class Exercises extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                int exerciseId = databaseHandler.getExerciseId(exercisesListItems.get(pos), dayOfWeekId);
+                                databaseHandler.deleteExercise(exerciseId);
                                 exercisesListItems.remove(pos);
                                 exercisesAdapter.notifyDataSetChanged();
                                 Toast.makeText(Exercises.this, "Item deleted", Toast.LENGTH_SHORT).show();

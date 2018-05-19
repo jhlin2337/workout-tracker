@@ -64,7 +64,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 LOG_COLUMN_REP_2 + " INTEGER, " +
                 LOG_COLUMN_REP_3 + " INTEGER, " +
                 LOG_COLUMN_WEIGHT + " INTEGER, " +
-                LOG_COLUMN_EXERCISES_ID + " INTEGER " +
+                LOG_COLUMN_EXERCISES_ID + " INTEGER, " +
                 "FOREIGN KEY (" + LOG_COLUMN_EXERCISES_ID + ") REFERENCES " +
                     TABLE_EXERCISES + "(" + EXERCISES_COLUMN_ID + ")" + " ON DELETE CASCADE " +
                 ");";
@@ -165,7 +165,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<String> getExercises(int workoutDayId) {
         // Query database for exercises
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_EXERCISES;
+        String query = "SELECT * FROM " + TABLE_EXERCISES + " WHERE " + EXERCISES_COLUMN_WORKOUT_DAYS_ID + "=\"" + workoutDayId + "\";";
         Cursor result = db.rawQuery(query, null);
 
         // Populate ArrayList with exercise data
@@ -182,6 +182,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
 
         return exercisesList;
+    }
+
+    // Return the id associated with the exerciseName and workoutDayId
+    public int getExerciseId(String exerciseName, int workoutDayId) {
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_EXERCISES + " WHERE " +
+                EXERCISES_COLUMN_NAME + "=\"" + exerciseName + "\" AND " +
+                EXERCISES_COLUMN_WORKOUT_DAYS_ID + "=\"" + workoutDayId + "\";";
+        Cursor result = db.rawQuery(query, null);
+
+        result.moveToFirst();
+
+        int idIndex = result.getColumnIndex(EXERCISES_COLUMN_ID);
+        int id = result.getInt(idIndex);
+        db.close();
+
+        return id;
     }
 
     // ------------------------------------------------------------------------------------------ //
