@@ -85,7 +85,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), Exercises.class);
-                intent.putExtra("dayOfWeek", workoutDaysListItems.get(position));
+                String workoutDay = workoutDaysListItems.get(position);
+                intent.putExtra("dayOfWeek", workoutDay);
+                int dayOfWeekId = databaseHandler.getWorkoutDayId(workoutDay);
+                intent.putExtra("id", dayOfWeekId);
                 startActivity(intent);
             }
         });
