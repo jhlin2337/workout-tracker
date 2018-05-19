@@ -26,11 +26,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // Day of week that's displayed on the dropdown
     String selectedDay = "Monday";
 
+    // Create an instance variable for the database
+    DatabaseHandler databaseHandler;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        databaseHandler = new DatabaseHandler(this);
         setupSpinner();
         setupListView();
     }
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void addItems(View v) {
         if (workoutDaysListItems.indexOf(selectedDay) == -1) {
             workoutDaysListItems.add(selectedDay);
+            databaseHandler.addWorkoutDay(selectedDay);
         }
         workoutDaysAdapter.notifyDataSetChanged();
     }
@@ -69,7 +74,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // Set up ListView of days of week when user works out
     private void setupListView() {
-        ListView workoutDaysListView = (ListView) findViewById(R.id.workoutDaysListView);
+        workoutDaysListItems = databaseHandler.getWorkoutDays();
+
+        final ListView workoutDaysListView = (ListView) findViewById(R.id.workoutDaysListView);
         workoutDaysAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, workoutDaysListItems);
         workoutDaysListView.setAdapter(workoutDaysAdapter);
 
@@ -95,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                databaseHandler.deleteWorkoutDay(workoutDaysListItems.get(pos));
                                 workoutDaysListItems.remove(pos);
                                 workoutDaysAdapter.notifyDataSetChanged();
                                 Toast.makeText(MainActivity.this, "Item deleted", Toast.LENGTH_SHORT).show();

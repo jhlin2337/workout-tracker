@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -66,10 +67,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ArrayList<String> workoutDaysList = new ArrayList<String>();
         int dayIndex = result.getColumnIndex(WORKOUT_DAYS_COLUMN_DAY);
         result.moveToFirst();
-        while (result != null) {
-            workoutDaysList.add(result.getString(dayIndex));
+        while (!result.isAfterLast()) {
+            if (result.getString(dayIndex) != null) {
+                workoutDaysList.add(result.getString(dayIndex));
+            }
             result.moveToNext();
         }
+
+        db.close();
 
         return workoutDaysList;
     }
