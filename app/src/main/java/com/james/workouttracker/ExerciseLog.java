@@ -16,18 +16,26 @@ public class ExerciseLog extends AppCompatActivity {
 
     // Define ArrayList that will hold the exercises
     ArrayList<Workout> exerciseLogListItems = new ArrayList<Workout>();
+    ArrayList<Integer> exerciseLogIds = new ArrayList<Integer>();
 
     // Define adapter that will handle the exercisesListView
     WorkoutLogListAdapter exerciseLogAdapter;
 
+    // Create an instance variable for the database
+    DatabaseHandler databaseHandler;
+
+    // Variables that represent the name and id of the dayOfWeek the page is currently on
     String exerciseName;
+    int exerciseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_log);
 
+        databaseHandler = new DatabaseHandler(this);
         exerciseName = getIntent().getStringExtra("exercise");
+        exerciseId = getIntent().getIntExtra("id", -1);
         setupListView();
     }
 
@@ -64,11 +72,17 @@ public class ExerciseLog extends AppCompatActivity {
         Workout workoutEntry = new Workout(exerciseName, iRep1, iRep2, iRep3, iWeight);
 
         exerciseLogListItems.add(workoutEntry);
+        int id = databaseHandler.addLogEntry(workoutEntry, exerciseId);
+        exerciseLogIds.add(id);
         exerciseLogAdapter.notifyDataSetChanged();
     }
 
     // Set up ListView of exercise logs
     private void setupListView() {
+        LogIdPair logIdPair = databaseHandler.getLogHistory(exerciseName, exerciseId);
+        exerciseLogListItems = logIdPair.logHistoryList;
+        exerciseLogIds = logIdPair.logHistoryIds;
+
         ListView exerciseLogListView = (ListView) findViewById(R.id.exerciseLogListView);
         exerciseLogAdapter = new WorkoutLogListAdapter(this, R.layout.adapter_view_layout, exerciseLogListItems);
         exerciseLogListView.setAdapter(exerciseLogAdapter);
@@ -93,7 +107,9 @@ public class ExerciseLog extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                databaseHandler.deleteLogEntry(exerciseLogIds.get(pos));
                                 exerciseLogListItems.remove(pos);
+                                exerciseLogIds.remove(pos);
                                 exerciseLogAdapter.notifyDataSetChanged();
                                 Toast.makeText(ExerciseLog.this, "Item deleted", Toast.LENGTH_SHORT).show();
                             }

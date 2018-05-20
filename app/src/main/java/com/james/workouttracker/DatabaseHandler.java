@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -201,6 +202,69 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return id;
     }
 
+
     // ------------------------------------------------------------------------------------------ //
     // DATABASE METHODS FOR WORKOUT LOG
+
+    // Add a log entry for a particular exercise
+    public int addLogEntry(Workout logEntry, int exerciseId) {
+        ContentValues values = new ContentValues();
+        values.put(LOG_COLUMN_REP_1, logEntry.getRep1());
+        values.put(LOG_COLUMN_REP_2, logEntry.getRep2());
+        values.put(LOG_COLUMN_REP_3, logEntry.getRep3());
+        values.put(LOG_COLUMN_WEIGHT, logEntry.getWeight());
+        values.put(LOG_COLUMN_EXERCISES_ID, exerciseId);
+        SQLiteDatabase db = getWritableDatabase();
+        int id = (int) db.insert(TABLE_LOG, null, values);
+        db.close();
+
+        return id;
+    }
+
+    // Delete a log entry from the database
+    public void deleteLogEntry(int logEntryId) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_LOG + " WHERE " + LOG_COLUMN_ID+ "=\"" + logEntryId + "\";");
+    }
+
+    // Get the workout log history for a particular exercise
+    public LogIdPair getLogHistory(String exerciseName, int exerciseId) {
+        // Query database for log entries
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_LOG + " WHERE " + LOG_COLUMN_EXERCISES_ID + "=\"" + exerciseId + "\";";
+        Cursor result = db.rawQuery(query, null);
+
+        // Populate ArrayList with log data
+        ArrayList<Workout> logHistoryList = new ArrayList<Workout>();
+        int rep1Index = result.getColumnIndex(LOG_COLUMN_REP_1);
+        int rep2Index = result.getColumnIndex(LOG_COLUMN_REP_2);
+        int rep3Index = result.getColumnIndex(LOG_COLUMN_REP_3);
+        int weightIndex = result.getColumnIndex(LOG_COLUMN_WEIGHT);
+
+        ArrayList<Integer> logHistoryIds = new ArrayList<Integer>();
+        int idIndex = result.getColumnIndex(LOG_COLUMN_ID);
+
+        result.moveToFirst();
+        while (!result.isAfterLast()) {
+            // Add log entry
+            int rep1 = result.getInt(rep1Index);
+            int rep2 = result.getInt(rep2Index);
+            int rep3 = result.getInt(rep3Index);
+            int weight = result.getInt(weightIndex);
+            Workout entry = new Workout(exerciseName, rep1, rep2, rep3, weight);
+            logHistoryList.add(entry);
+
+            // Add id entry
+            int id = result.getInt(idIndex);
+            logHistoryIds.add(id);
+
+            result.moveToNext();
+        }
+
+        db.close();
+
+        LogIdPair retObj = new LogIdPair(logHistoryList, logHistoryIds);
+
+        return retObj;
+    }
 }
